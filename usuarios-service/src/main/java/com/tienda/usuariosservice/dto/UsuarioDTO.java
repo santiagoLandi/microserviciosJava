@@ -9,7 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -36,5 +37,5 @@ public class UsuarioDTO {
     @NotBlank(message = "La dirección no puede estar vacía")
     private String direccion;
 
-    private Date fechaRegistro;
+    private LocalDate fechaRegistro;
 }

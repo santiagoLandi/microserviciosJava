@@ -3,6 +3,7 @@ package com.tienda.usuariosservice.controller;
 import com.tienda.usuariosservice.dto.UsuarioDTO;
 import com.tienda.usuariosservice.service.UsuarioService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,10 +22,10 @@ public class UsuarioController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UsuarioDTO> register(@RequestBody @Valid UsuarioDTO dto) {
+    public ResponseEntity<?> register(@RequestBody @Valid UsuarioDTO dto) {
         try{
             service.saveUsuario(dto);
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado con exito");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -46,16 +47,8 @@ public class UsuarioController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getUsuarioById(@PathVariable("id") Long id) {
         try{
-            if(id != null){
-                UsuarioDTO buscado = service.findById(id);
-                if(buscado != null){
-                    return ResponseEntity.ok(buscado);
-                }else{
-                    return ResponseEntity.notFound().build();
-                }
-            }else{
-                return ResponseEntity.noContent().build();
-            }
+            UsuarioDTO buscado = service.findById(id);
+            return(buscado !=null ? ResponseEntity.ok(buscado) : ResponseEntity.notFound().build());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().build();
         }
@@ -105,14 +98,10 @@ public class UsuarioController {
     @PostMapping("/{id}")
     public ResponseEntity<?>actualizarUsuario(@PathVariable("id") Long id,@RequestBody UsuarioDTO usuarioActualizado) {
         try {
-            if(id != null && service.findById(id)){
-                service.actualizarUsuario(id,usuarioActualizado);
-                return ResponseEntity.ok().body("Usuario actualizado.");
-            }else{
-                return ResponseEntity.badRequest().body("Usuario no encontrado.");
-            }
+            service.actualizarUsuario(id,usuarioActualizado);
+            return ResponseEntity.ok().body("Usuario actualizado.");
         } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body("Error al actualizar el usuario, campos incorrectos");
+            return ResponseEntity.badRequest().body("Error al actualizar el usuario: " + e.getMessage());
         }
     }
 }
