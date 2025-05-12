@@ -1,4 +1,8 @@
 package com.tienda.microusuario.repository;
 
-public interface UsuarioRepository {
+import com.tienda.microusuario.entity.Usuario;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
+
 }
