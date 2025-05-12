@@ -31,6 +31,30 @@ public class UsuarioController {
     @GetMapping("/")
     public ResponseEntity<?> getAllUsuarios() {
         List<UsuarioDTO> usuarios= usuarioService.getAll();
+        if(usuarios.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
         return ResponseEntity.status(HttpStatus.OK).body(usuarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUsuarioById(@PathVariable Long id) {
+        UsuarioDTO usuarioBuscado = usuarioService.findById(id);
+        if(usuarioBuscado == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioBuscado);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteUsuario(@PathVariable Long id) {
+        usuarioService.delete(id);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUsuario(@PathVariable Long id, @RequestBody UsuarioDTO usuario) {
+        UsuarioDTO usuarioActualizado =usuarioService.updateUsuario(id,usuario);
+        return ResponseEntity.ok(usuarioActualizado);
     }
 }
